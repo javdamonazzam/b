@@ -11,7 +11,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { RoleEnum } from './types/enum/role.enum';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  console.log(Config.jwt.secret);
   
   // app.useGlobalFilters(new ExceptionsFilter());
   app.useGlobalInterceptors(new TransformInterceptor());

@@ -19,27 +19,6 @@ export class AuthService {
     }
     return null;
   }
-  //   async login(Body: User) {
-  //     // const validateUser = await this.validateUser(Body.username,Body.password);
-  //     const user = await this.usersService.findOneWithPw(Body.username);
-
-  //     if (user && user.password && bcrypt.compareSync(Body.password, user.password)) {
-  //     const payload = {
-  //       username: Body.username,
-  //       role:Body.role
-  //     };
-  //     return {
-  //       access_token: this.jwtService.sign(payload, {
-  //         secret: allConfig.jwt.secret,
-  //       }),
-  //       user:Body.username,
-  //     };
-  //   }else{
-  //     throw new UnauthorizedException('نام کاربری یا رمز عبور اشتباه است!');
-
-  //   }
-  // }
-
   async login(users: User) {
     const { username, password } = users;
     const user = await this.usersService.findOneBy({
@@ -56,7 +35,7 @@ export class AuthService {
       id: user.id,
       role:user.role,
       access_token: this.jwtService.sign(payload, {
-        secret: allConfig.jwt.secret,
+        secret: 'ad12@!!!jjjj',
       }),
     };
   }
