@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { allConfig } from 'config/config';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         global: true,
-        secret: configService.get<string>('JWT_SECRET'), // استفاده از ConfigService برای دریافت کلید مخفی
+        secret:  allConfig.jwt.secret, // استفاده از ConfigService برای دریافت کلید مخفی
         signOptions: { expiresIn: '1d' },
       }),
       inject: [ConfigService],
