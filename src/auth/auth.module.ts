@@ -6,18 +6,21 @@ import { UserModule } from '../user/user.module';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { allConfig } from 'config/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
+    ConfigModule.forRoot(), // اضافه کردن این خط برای بارگذاری تنظیمات
     JwtModule.registerAsync({
-      useFactory: () => ({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
         global: true,
-        secret: allConfig.jwt.secret,
+        secret: configService.get<string>('JWT_SECRET'), // استفاده از ConfigService برای دریافت کلید مخفی
         signOptions: { expiresIn: '1d' },
       }),
+      inject: [ConfigService],
     }),
   ],
   controllers: [AuthController],
