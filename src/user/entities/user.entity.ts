@@ -7,7 +7,7 @@ import {
   ManyToMany,
   OneToMany,
 } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { RoleEnum } from 'src/types/enum/role.enum';
 import { Service } from '@/service/entities/service.entity';
 import { Invoice } from '@/invoice/entities/invoice.entity';
