@@ -15,7 +15,7 @@ import { allConfig } from 'config/config';
     JwtModule.registerAsync({
       useFactory: () => ({
         global: true,
-        secret: 'jhajkdhj@22',
+        secret: allConfig.jwt.secret,
         signOptions: { expiresIn: '1d' },
       }),
     }),
