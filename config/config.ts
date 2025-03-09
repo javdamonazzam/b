@@ -14,7 +14,7 @@ export const allConfig = {
     port: process.env.APP_PORT || 1111,
   },
   jwt: {
-    secret: process.env.JWT_SECRET,
+    secret: 'ad12@!!!jjjj',
   },
   security: {
     name: process.env.USERNAME,

@@ -73,9 +73,7 @@ export class ExceptionsFilter extends BaseExceptionFilter {
           data: null,
         });
       } catch (e) {
-        // super.catch(exception, host);
-        console.log('eror');
-        
+        super.catch(exception, host);
       }
     }
   }

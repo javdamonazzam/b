@@ -18,7 +18,7 @@ import { allConfig } from 'config/config';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         global: true,
-        secret:  'jhjjkkhjkjkhjkhjkj!@', // استفاده از ConfigService برای دریافت کلید مخفی
+        secret:  'ad12@!!!jjjj', // استفاده از ConfigService برای دریافت کلید مخفی
         signOptions: { expiresIn: '1d' },
       }),
       inject: [ConfigService],
