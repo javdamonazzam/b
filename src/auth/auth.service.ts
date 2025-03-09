@@ -30,7 +30,7 @@ export class AuthService {
   //     };
   //     return {
   //       access_token: this.jwtService.sign(payload, {
-  //         secret: allConfig.jwt.secret,
+  //         secret: 'jhajkdhj@22',
   //       }),
   //       user:Body.username,
   //     };
@@ -56,7 +56,7 @@ export class AuthService {
       id: user.id,
       role:user.role,
       access_token: this.jwtService.sign(payload, {
-        secret: allConfig.jwt.secret,
+        secret: 'jhajkdhj@22',
       }),
     };
   }
