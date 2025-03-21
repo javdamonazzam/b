@@ -1,38 +1,34 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { QueryParams } from 'src/base';
-import { Roles } from 'src/auth/decorators/role.decorator';
-import { RoleEnum } from 'src/types/enum/role.enum';
-
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
- 
-  @Post('create')
-  @Roles(RoleEnum.ADMIN)
+
+  @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    
-    return this.userService.create_user(createUserDto);
+    return this.userService.create(createUserDto);
   }
-  @Get('fi')
-  find(@Body() createUserDto: CreateUserDto) {
-    return this.userService.find(createUserDto);
+
+  @Get()
+  findAll() {
+    return this.userService.findAll();
   }
-  
-  @Get('find')
-  findAll(@Query() query: QueryParams) {
-    return this.userService.findAll(query);
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.userService.findOne(+id);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(+id, updateUserDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.userService.remove(+id);
   }
 }
