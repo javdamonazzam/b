@@ -27,14 +27,8 @@ export class UserController {
     return this.userService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
-    const numericId = parseInt(id, 10);
-  
-    if (isNaN(numericId)) {
-    }
-  
-    await this.userService.remove(numericId);
-    return { message: `User with ID ${numericId} removed successfully` };
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.userService.remove(+id);
+  // }
 }
