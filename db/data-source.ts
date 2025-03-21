@@ -8,8 +8,8 @@ export const dataSourceOptions: DataSourceOptions = {
   database: 'vpn',
   port: 5432,
   synchronize: true,
-  entities: ['dist/**/*.entity.js'],
-  migrations: ['dist/db/migrations/*js'],
+  entities: [__dirname + '/../**/*.entity.{js,ts}'],  
+  migrations: [__dirname + '/../db/migrations/*.{js,ts}'],
 };
 const dataSource = new DataSource(dataSourceOptions);
 export default dataSource;
