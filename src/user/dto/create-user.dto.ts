@@ -1,4 +1,4 @@
-// import { RoleEnum } from '@/types/enum/role.enum';
+import { RoleEnum } from '@/types/enum/role.enum';
 import { IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
@@ -8,4 +8,6 @@ export class CreateUserDto {
   password: string;
   @IsNotEmpty()
   account_price: number;
+  @IsNotEmpty()
+  role?: RoleEnum[] ;
 }
