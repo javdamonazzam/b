@@ -7,7 +7,7 @@ import { NotFoundException } from '@nestjs/common';
 import { FindOneOptions } from 'typeorm/find-options/FindOneOptions';
 
 export abstract class BaseCrudService<T> {
-  protected constructor(protected repository: Repository<T | any>) {}
+  protected constructor(protected repository: Repository<T | any>) { }
 
   async create(body: DeepPartial<T>): Promise<T> {
     const model = this.repository.create(body);
@@ -55,32 +55,33 @@ export abstract class BaseCrudService<T> {
       return obj;
     }
   }
-  async findAll(query: QueryParams): Promise<FindAll<T>> {
+  async findAll(query: QueryParams= {}): Promise<FindAll<T>> {
     const { page, take, filter } = query;
     let pagenumber = page ? page : 0;
     const count = await this.repository.count({ where: filter });
     const data = await this.repository.find({
       take,
-      skip: pagenumber * take ? take : 0,
+      skip: (pagenumber * (take || 0)),
       where: filter,
       order: { id: -1 },
     });
 
-    return PaginateData(data, page, take, count);
+    return PaginateData(data, page ?? 0, take ?? 0, count);
+
   }
 
   async findOneBy(obj: Partial<T>): Promise<T> {
     const result = await this.repository.findOneBy(obj);
     if (!result) throw new NotFoundException('');
-    
+
     return result;
   }
-  async findByUsername(username:string) {
-    
-    const result = await this.repository.findOneBy({username:username});
-    
+  async findByUsername(username: string) {
+
+    const result = await this.repository.findOneBy({ username: username });
+
     if (!result) throw new NotFoundException('');
-    
+
     return result;
   }
 

@@ -14,7 +14,7 @@ export class UserController {
 
   @Get()
   findAll() {
-    return this.userService.findAll();
+    return this.userService.findAll({});
   }
 
   @Get(':id')
@@ -28,7 +28,13 @@ export class UserController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const numericId = parseInt(id, 10);
+  
+    if (isNaN(numericId)) {
+    }
+  
+    await this.userService.remove(numericId);
+    return { message: `User with ID ${numericId} removed successfully` };
   }
 }

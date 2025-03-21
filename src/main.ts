@@ -5,10 +5,6 @@ import { ExceptionsFilter } from './base/middlewares/exception-handler.filter';
 import { TransformInterceptor } from './base/middlewares/transform.interceptor';
 import helmet from 'helmet';
 import { UserService } from './user/user.service';
-import { query } from 'express';
-import { QueryParams } from './base';
-import { JwtModule } from '@nestjs/jwt';
-import { RoleEnum } from './types/enum/role.enum';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // app.useGlobalFilters(new ExceptionsFilter());
