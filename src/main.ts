@@ -20,6 +20,6 @@ async function bootstrap() {
   const userService = app.get<UserService>(UserService);
 
   await userService.initialize();
-  await app.listen(+Config.setting.port);
+  await app.listen(3001);
 }
 bootstrap();
