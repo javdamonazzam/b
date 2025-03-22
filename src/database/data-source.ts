@@ -9,8 +9,8 @@ export const dataSourceOptions: DataSourceOptions = {
   database: "vpn",
   synchronize: true,
   logging: true,
-  migrations: ["dist/src/migrations/*.js"],
   entities: [__dirname + '/../**/*.entity.js'], 
+  migrations: ["dist/src/migrations/*.js"],
   subscribers: [],
 };
 const dataSource = new DataSource(dataSourceOptions);
