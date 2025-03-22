@@ -1,15 +1,16 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 
 export const dataSourceOptions: DataSourceOptions = {
-  type: 'postgres',
-  host: 'Localhost',
-  username: 'vpn',
-  password: String(1312),
-  database: 'vpn',
+  type: "postgres",
+  host: "localhost",
   port: 5432,
-  synchronize: true,
-  entities: [__dirname + '/../**/*.entity.{js,ts}'],  
-  migrations: [__dirname + '/../db/migrations/*.{js,ts}'],
+  username: "vpn",
+  password: "1312",  // رمزعبور دیتابیس
+  database: "vpn",
+  synchronize: false,
+  logging: false,
+  migrations: ["dist/migrations/*.js"],  
+  subscribers: [],
 };
 const dataSource = new DataSource(dataSourceOptions);
 export default dataSource;
