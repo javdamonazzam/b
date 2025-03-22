@@ -7,8 +7,8 @@ export const dataSourceOptions: DataSourceOptions = {
   username: "vpn",
   password: "1312",  // رمزعبور دیتابیس
   database: "vpn",
-  synchronize: false,
-  logging: false,
+  synchronize: true,
+  logging: true,
   migrations: ["dist/src/migrations/*.js"],
   subscribers: [],
 };
