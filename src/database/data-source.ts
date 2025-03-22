@@ -9,7 +9,7 @@ export const dataSourceOptions: DataSourceOptions = {
   database: "vpn",
   synchronize: false,
   logging: false,
-  migrations: ["dist/migrations/*.js"],  
+  migrations: ["dist/src/migrations/*.js"],
   subscribers: [],
 };
 const dataSource = new DataSource(dataSourceOptions);
