@@ -4,8 +4,8 @@ export const dataSourceOptions: DataSourceOptions = {
   type: "postgres",
   host: "localhost",
   port: 5432,
-  username: "vpn",
-  password: "1312",  // رمزعبور دیتابیس
+  username: "vpn1",
+  password: "1213",  // رمزعبور دیتابیس
   database: "vpn",
   synchronize: true,
   logging: true,
