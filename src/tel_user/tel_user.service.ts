@@ -33,6 +33,7 @@ export class TelUserService implements OnModuleInit {
           wallet_balance: 0,
           user_id: user.id,
         });
+        return
       }
   
       let user_wallet = await this.walletService.findOneBy({ user_id: user.id });
