@@ -27,14 +27,13 @@ export class TelUserService implements OnModuleInit {
       let user = await this.userRepository.findOneBy({ username: `${chatId}` });
   
       if (!user) {
-        user = await this.userRepository.create({ username: `${chatId}`, password: 'jkadjkgkjhlkgsk23423', account_price: 45000 });
-        await this.userRepository.save(user);
-        await this.walletService.create({
-          wallet_balance: 0,
-          user_id: user.id,
+        user = this.userRepository.create({
+          username: `${chatId}`,
+          password: 'jkadjkgkjhlkgsk23423',
+          account_price: 45000,
         });
-        return
       }
+        await this.userRepository.save(user);
   
       let user_wallet = await this.walletService.findOneBy({ user_id: user.id });
   
