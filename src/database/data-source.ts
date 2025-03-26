@@ -7,7 +7,7 @@ export const dataSourceOptions: DataSourceOptions = {
   username: "vpn1",
   password: "1213",  // رمزعبور دیتابیس
   database: "vpn",
-  synchronize: true,
+  // synchronize: true,
   logging: true,
   entities: [__dirname + '/../**/*.entity.js'], 
   migrations: ["dist/src/migrations/*.js"],
