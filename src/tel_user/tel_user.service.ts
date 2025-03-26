@@ -24,28 +24,65 @@ export class TelUserService implements OnModuleInit {
   async onModuleInit() {
     this.bot.start(async (ctx) => {
       const chatId = ctx.message.chat.id;
-      let user = await this.userRepository.findOneBy({ username: `${chatId}` });
-  
+      
+      let user;
+      try {
+        user = await this.userRepository.findOneBy({ username: `${chatId}` });
+      } catch (error) {
+        console.error("خطا در جستجوی کاربر: ", error);
+        await ctx.reply("❌ مشکلی در جستجوی اطلاعات شما وجود دارد. لطفاً دوباره تلاش کنید.");
+        return;
+      }
+    
+      // اگر کاربر پیدا نشد، آن را ایجاد کنید
       if (!user) {
         user = this.userRepository.create({
           username: `${chatId}`,
           password: 'jkadjkgkjhlkgsk23423',
           account_price: 45000,
         });
+        try {
+          await this.userRepository.save(user);
+          await this.walletService.create({
+            wallet_balance: 0,
+            user_id: user.id,
+          });
+        } catch (error) {
+          console.error("خطا در ذخیره کاربر: ", error);
+          await ctx.reply("❌ مشکلی در ذخیره‌سازی اطلاعات شما وجود دارد. لطفاً دوباره تلاش کنید.");
+          return;
+        }
       }
-        await this.userRepository.save(user);
-  
-      let user_wallet = await this.walletService.findOneBy({ user_id: user.id });
-  
+    
+      // اطلاعات کیف پول
+      let user_wallet;
+      try {
+        user_wallet = await this.walletService.findOneBy({ user_id: user.id });
+        
+        // اگر کیف پول پیدا نشد، یک کیف پول جدید ایجاد کنید
+        if (!user_wallet) {
+          user_wallet = await this.walletService.create({
+            wallet_balance: 0,
+            user_id: user.id,
+          });
+        }
+      } catch (error) {
+        console.error("خطا در جستجوی کیف پول کاربر: ", error);
+        await ctx.reply("❌ مشکلی در جستجوی اطلاعات کیف پول شما وجود دارد.");
+        return;
+      }
+    
+      // نمایش گزینه‌ها به کاربر
       await ctx.reply(
         'یکی از گزینه‌های زیر را انتخاب کنید:',
         Markup.keyboard([
           [`💰 ${user_wallet.wallet_balance.toLocaleString('fa-IR')} هزارتومان`],
           ['🔄 تمدید سرویس', '🛒 خرید سرویس'],
-          ['تعویض سرویس']
+          ['تعویض سرویس'],
         ]).resize()
       );
     });
+    
   
     // ✅ پردازش خرید سرویس (خارج از this.bot.start)
     this.bot.hears('🛒 خرید سرویس', async (ctx) => {
