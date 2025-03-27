@@ -27,7 +27,7 @@ import { TasksServiceModule } from './tasks-service/tasks-service.module';
     AuthModule,
     ScheduleModule.forRoot(),
     TasksServiceModule,
-  ],
+   ],
   controllers: [AppController],
   providers: [
     AppService,
