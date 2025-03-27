@@ -9,7 +9,7 @@ import { ServiceService } from '@/service/service.service';
 import * as QRCode from 'qrcode';
 
 @Injectable()
-export class TelUserService  {
+export class TelUserService implements OnModuleInit {
   private bot: Telegraf;
 
   constructor(
@@ -21,137 +21,137 @@ export class TelUserService  {
     this.bot = new Telegraf('7897182934:AAFR8JohENrZaEaPo9jv5XO_fcTJ7pLf5zI');
   }
 
-  // async onModuleInit() {
-  //   this.bot.start(async (ctx) => {
-  //     const chatId = ctx.message.chat.id;
+  async onModuleInit() {
+    this.bot.start(async (ctx) => {
+      const chatId = ctx.message.chat.id;
       
-  //     let user;
-  //     try {
-  //       user = await this.userRepository.findOneBy({ username: `${chatId}` });
-  //     } catch (error) {
-  //       console.error("خطا در جستجوی کاربر: ", error);
-  //       await ctx.reply("❌ مشکلی در جستجوی اطلاعات شما وجود دارد. لطفاً دوباره تلاش کنید.");
-  //       return;
-  //     }
+      let user;
+      try {
+        user = await this.userRepository.findOneBy({ username: `${chatId}` });
+      } catch (error) {
+        console.error("خطا در جستجوی کاربر: ", error);
+        await ctx.reply("❌ مشکلی در جستجوی اطلاعات شما وجود دارد. لطفاً دوباره تلاش کنید.");
+        return;
+      }
     
-  //     // اگر کاربر پیدا نشد، آن را ایجاد کنید
-  //     if (!user) {
-  //       user = this.userRepository.create({
-  //         username: `${chatId}`,
-  //         password: 'jkadjkgkjhlkgsk23423',
-  //         account_price: 45000,
-  //       });
-  //       try {
-  //         await this.userRepository.save(user);
-  //         await this.walletService.create({
-  //           wallet_balance: 0,
-  //           user_id: user.id,
-  //         });
-  //       } catch (error) {
-  //         console.error("خطا در ذخیره کاربر: ", error);
-  //         await ctx.reply("❌ مشکلی در ذخیره‌سازی اطلاعات شما وجود دارد. لطفاً دوباره تلاش کنید.");
-  //         return;
-  //       }
-  //     }
+      // اگر کاربر پیدا نشد، آن را ایجاد کنید
+      if (!user) {
+        user = this.userRepository.create({
+          username: `${chatId}`,
+          password: 'jkadjkgkjhlkgsk23423',
+          account_price: 45000,
+        });
+        try {
+          await this.userRepository.save(user);
+          await this.walletService.create({
+            wallet_balance: 0,
+            user_id: user.id,
+          });
+        } catch (error) {
+          console.error("خطا در ذخیره کاربر: ", error);
+          await ctx.reply("❌ مشکلی در ذخیره‌سازی اطلاعات شما وجود دارد. لطفاً دوباره تلاش کنید.");
+          return;
+        }
+      }
     
-  //     // اطلاعات کیف پول
-  //     let user_wallet;
-  //     try {
-  //       user_wallet = await this.walletService.findOneBy({ user_id: user.id });
+      // اطلاعات کیف پول
+      let user_wallet;
+      try {
+        user_wallet = await this.walletService.findOneBy({ user_id: user.id });
         
-  //       // اگر کیف پول پیدا نشد، یک کیف پول جدید ایجاد کنید
-  //       if (!user_wallet) {
-  //         user_wallet = await this.walletService.create({
-  //           wallet_balance: 0,
-  //           user_id: user.id,
-  //         });
-  //       }
-  //     } catch (error) {
-  //       console.error("خطا در جستجوی کیف پول کاربر: ", error);
-  //       await ctx.reply("❌ مشکلی در جستجوی اطلاعات کیف پول شما وجود دارد.");
-  //       return;
-  //     }
+        // اگر کیف پول پیدا نشد، یک کیف پول جدید ایجاد کنید
+        if (!user_wallet) {
+          user_wallet = await this.walletService.create({
+            wallet_balance: 0,
+            user_id: user.id,
+          });
+        }
+      } catch (error) {
+        console.error("خطا در جستجوی کیف پول کاربر: ", error);
+        await ctx.reply("❌ مشکلی در جستجوی اطلاعات کیف پول شما وجود دارد.");
+        return;
+      }
     
-  //     // نمایش گزینه‌ها به کاربر
-  //     await ctx.reply(
-  //       'یکی از گزینه‌های زیر را انتخاب کنید:',
-  //       Markup.keyboard([
-  //         [`💰 ${user_wallet.wallet_balance.toLocaleString('fa-IR')} هزارتومان`],
-  //         ['🔄 تمدید سرویس', '🛒 خرید سرویس'],
-  //         ['تعویض سرویس'],
-  //       ]).resize()
-  //     );
-  //   });
+      // نمایش گزینه‌ها به کاربر
+      await ctx.reply(
+        'یکی از گزینه‌های زیر را انتخاب کنید:',
+        Markup.keyboard([
+          [`💰 ${user_wallet.wallet_balance.toLocaleString('fa-IR')} هزارتومان`],
+          ['🔄 تمدید سرویس', '🛒 خرید سرویس'],
+          ['تعویض سرویس'],
+        ]).resize()
+      );
+    });
     
   
-  //   // ✅ پردازش خرید سرویس (خارج از this.bot.start)
-  //   this.bot.hears('🛒 خرید سرویس', async (ctx) => {
-  //     const chatId = ctx.message.chat.id;
-  //     let user = await this.userRepository.findOneBy({ username: `${chatId}` });
+    // ✅ پردازش خرید سرویس (خارج از this.bot.start)
+    this.bot.hears('🛒 خرید سرویس', async (ctx) => {
+      const chatId = ctx.message.chat.id;
+      let user = await this.userRepository.findOneBy({ username: `${chatId}` });
 
   
-  //     await ctx.reply(
-  //       "⏳ لطفاً مدت زمان اشتراک را انتخاب کنید:",
-  //       Markup.keyboard([
-  //         [ "2️⃣ دوماهه","1️⃣ یک‌ماهه"],
-  //         [ "6️⃣ شش‌ماهه","3️⃣ سه‌ماهه"],
-  //         ["❌ لغو"]
-  //       ]).resize()
-  //     );
-  //   });
+      await ctx.reply(
+        "⏳ لطفاً مدت زمان اشتراک را انتخاب کنید:",
+        Markup.keyboard([
+          [ "2️⃣ دوماهه","1️⃣ یک‌ماهه"],
+          [ "6️⃣ شش‌ماهه","3️⃣ سه‌ماهه"],
+          ["❌ لغو"]
+        ]).resize()
+      );
+    });
   
-  //   // ✅ پردازش انتخاب مدت زمان اشتراک
-  //   this.bot.hears(["1️⃣ یک‌ماهه", "2️⃣ دوماهه", "3️⃣ سه‌ماهه", "6️⃣ شش‌ماهه"], async (ctx) => {
-  //     const chatId = ctx.message.chat.id;
-  //     let user = await this.userRepository.findOneBy({ username: `${chatId}` });
-  //     let user_wallet = await this.walletService.findOneBy({ user_id: user.id });
+    // ✅ پردازش انتخاب مدت زمان اشتراک
+    this.bot.hears(["1️⃣ یک‌ماهه", "2️⃣ دوماهه", "3️⃣ سه‌ماهه", "6️⃣ شش‌ماهه"], async (ctx) => {
+      const chatId = ctx.message.chat.id;
+      let user = await this.userRepository.findOneBy({ username: `${chatId}` });
+      let user_wallet = await this.walletService.findOneBy({ user_id: user.id });
   
-  //     let months = 1;
-  //     switch (ctx.message.text) {
-  //       case "2️⃣ دوماهه": months = 2; break;
-  //       case "3️⃣ سه‌ماهه": months = 3; break;
-  //       case "6️⃣ شش‌ماهه": months = 6; break;
-  //       case "9️⃣ نه‌ماهه": months = 9; break;
-  //       case "1️⃣2️⃣ دوازده‌ماهه": months = 12; break;
-  //     }
-  //     if (user_wallet.wallet_balance < 50000) {
-  //       await ctx.reply("❌ موجودی کیف پول شما کافی نیست. لطفاً ابتدا موجودی خود را افزایش دهید.");
-  //       return;
-  //     }
-  //     await ctx.reply("⏳ لطفاً منتظر بمانید، در حال ساخت کانفیگ...");
+      let months = 1;
+      switch (ctx.message.text) {
+        case "2️⃣ دوماهه": months = 2; break;
+        case "3️⃣ سه‌ماهه": months = 3; break;
+        case "6️⃣ شش‌ماهه": months = 6; break;
+        case "9️⃣ نه‌ماهه": months = 9; break;
+        case "1️⃣2️⃣ دوازده‌ماهه": months = 12; break;
+      }
+      if (user_wallet.wallet_balance < 50000) {
+        await ctx.reply("❌ موجودی کیف پول شما کافی نیست. لطفاً ابتدا موجودی خود را افزایش دهید.");
+        return;
+      }
+      await ctx.reply("⏳ لطفاً منتظر بمانید، در حال ساخت کانفیگ...");
   
-  //     const res = await this.serviceService.create_account({ ip: '213.159.73.194', id: user.id, month: months, title: "b" });
+      const res = await this.serviceService.create_account({ ip: '213.159.73.194', id: user.id, month: months, title: "b" });
   
-  //     const buffer = Buffer.from(res.server_info, 'utf-8');
-  //     await ctx.replyWithDocument({ source: buffer, filename: `${res.title}.conf` });
+      const buffer = Buffer.from(res.server_info, 'utf-8');
+      await ctx.replyWithDocument({ source: buffer, filename: `${res.title}.conf` });
   
-  //     const qrBuffer = await QRCode.toBuffer(res.server_info);
-  //     await ctx.replyWithPhoto({ source: qrBuffer });
+      const qrBuffer = await QRCode.toBuffer(res.server_info);
+      await ctx.replyWithPhoto({ source: qrBuffer });
   
-  //     await ctx.reply("✅ کانفیگ شما ساخته شد! برای اطلاعات بیشتر به پشتیبانی پیام دهید.");
-  //   });
-  //   this.bot.hears("❌ لغو", async (ctx) => {
-  //     const chatId = ctx.message.chat.id;
-  //     let user = await this.userRepository.findOneBy({ username: `${chatId}` });
-  //     let user_wallet = await this.walletService.findOneBy({ user_id: user.id });
+      await ctx.reply("✅ کانفیگ شما ساخته شد! برای اطلاعات بیشتر به پشتیبانی پیام دهید.");
+    });
+    this.bot.hears("❌ لغو", async (ctx) => {
+      const chatId = ctx.message.chat.id;
+      let user = await this.userRepository.findOneBy({ username: `${chatId}` });
+      let user_wallet = await this.walletService.findOneBy({ user_id: user.id });
     
-  //     await ctx.reply(
-  //       'یکی از گزینه‌های زیر را انتخاب کنید:',
-  //       Markup.keyboard([
-  //         [`💰 ${user_wallet.wallet_balance.toLocaleString('fa-IR')} هزارتومان`],
-  //         ['🔄 تمدید سرویس', '🛒 خرید سرویس'],
-  //         ['تعویض سرویس']
-  //       ]).resize()
-  //     );
-  //   });
-  //   // ✅ پردازش تمدید سرویس
-  //   this.bot.hears('🔄 تمدید سرویس', async (ctx) => {
-  //     await ctx.reply('🔄 لطفاً اطلاعات تمدید را وارد کنید.');
-  //   });
+      await ctx.reply(
+        'یکی از گزینه‌های زیر را انتخاب کنید:',
+        Markup.keyboard([
+          [`💰 ${user_wallet.wallet_balance.toLocaleString('fa-IR')} هزارتومان`],
+          ['🔄 تمدید سرویس', '🛒 خرید سرویس'],
+          ['تعویض سرویس']
+        ]).resize()
+      );
+    });
+    // ✅ پردازش تمدید سرویس
+    this.bot.hears('🔄 تمدید سرویس', async (ctx) => {
+      await ctx.reply('🔄 لطفاً اطلاعات تمدید را وارد کنید.');
+    });
   
-  //   await this.bot.launch();
-  //   console.log('🤖 ربات تلگرام راه‌اندازی شد.');
-  // }
+    await this.bot.launch();
+    console.log('🤖 ربات تلگرام راه‌اندازی شد.');
+  }
   
 
   async createUser(createUserDto: CreateTelUserDto) {
