@@ -18,7 +18,7 @@ export class TelUserService implements OnModuleInit {
     private walletService: WalletService,
     private readonly serviceService: ServiceService,
   ) {
-    this.bot = new Telegraf('7897182934:AAFR8JohENrZaEaPo9jv5XO_fcTJ7pLf5zI');
+    this.bot = new Telegraf('7934003931:AAGQjzzLFDbyDV9KcOlgvfHk1QafpgBZsLY');
   }
 
   async onModuleInit() {
