@@ -15,7 +15,6 @@ import { ServerModule } from './server/server.module';
 import { WalletModule } from './wallet/wallet.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { TasksServiceModule } from './tasks-service/tasks-service.module';
-import { TelUserModule } from './tel_user/tel_user.module';
 
 @Module({
   imports: [
@@ -28,7 +27,6 @@ import { TelUserModule } from './tel_user/tel_user.module';
     AuthModule,
     ScheduleModule.forRoot(),
     TasksServiceModule,
-    TelUserModule,
   ],
   controllers: [AppController],
   providers: [
