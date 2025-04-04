@@ -141,7 +141,6 @@ export class ServiceService extends BaseCrudService<Service> {
     const services = await super.findAll({});
     for (let index = 0; index < services.result.length; index++) {
       const service = services.result[index];
-console.log(index);
 
       // const jalaliDate = moment(service.createdAt, 'YYYY-MM-DD').locale('fa').format('YYYY/MM/DD');
       const date = new Date(service.createdAt);
@@ -157,7 +156,6 @@ console.log(index);
         const serverinfo = await this.serverService.findOneBy({
           id: service.server_id,
         });
-        console.log(service.id);
         
         try {
           const res = await axios.get(
@@ -177,7 +175,6 @@ console.log(index);
   async updateDate(id) {
     const service = await super.findOne(id);
     const user = await this.userService.findOne(service.user_id);
-    console.log(user.account_price);
     await this.walletService.charge(user.id, -user.account_price);
     return await super.update(id, { month: service.month + 1 });
   }

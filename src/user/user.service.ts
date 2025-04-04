@@ -58,7 +58,6 @@ export class UserService extends BaseCrudService<User> {
   async initialize() {
     const admin = await this.userRepository.findOneBy({ role: RoleEnum.ADMIN });
     if (!admin) {
-      console.log("javad", "2348");
       await this.create({
         username: "javad",
         password: "2348",

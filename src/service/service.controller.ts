@@ -46,7 +46,6 @@ export class ServiceController {
   }
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
-    console.log('start update');
     
     return this.serviceService.updateDate(+id);
   }

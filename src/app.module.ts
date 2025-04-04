@@ -15,6 +15,8 @@ import { ServerModule } from './server/server.module';
 import { WalletModule } from './wallet/wallet.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { TasksServiceModule } from './tasks-service/tasks-service.module';
+import { TelegramService } from './telegram/telegram.service';
+import { TelegramModule } from './telegram/telegram.module';
 
 @Module({
   imports: [
@@ -27,6 +29,7 @@ import { TasksServiceModule } from './tasks-service/tasks-service.module';
     AuthModule,
     ScheduleModule.forRoot(),
     TasksServiceModule,
+    TelegramModule,
    ],
   controllers: [AppController],
   providers: [
@@ -39,6 +42,7 @@ import { TasksServiceModule } from './tasks-service/tasks-service.module';
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
+    TelegramService,
   ],
 })
 export class AppModule {}

@@ -28,7 +28,6 @@ export class TasksService {
       );
 
       if (endDate<-3) {
-        console.log(endDate);
         
         const serverinfo = await this.serverService.findOneBy({
           id: service.server_id,
