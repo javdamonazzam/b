@@ -25,6 +25,8 @@ export class ServiceService extends BaseCrudService<Service> {
   }
 
   async create_account(body: any) {
+    console.log("start");
+    
     function modifyConfig(config: any) {
       // Split the config into lines
       let lines = config.split('\n');
