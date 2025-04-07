@@ -59,15 +59,23 @@ export class ServiceService extends BaseCrudService<Service> {
     const serverinfo = await this.serverService.findOneBy({
       ip: body.ip,
     });
+    console.log(2);
+    
     // Usage example
     const rand = generateRandom8DigitNumber();
-
+    
     const user = await this.userService.findOneById(body.id);
+    
     const service_price = Math.floor(user.account_price * body.month);
+    console.log(service_price);
+    
     const wallet = await this.walletService.findOneBy({ user_id: user.id });
+    console.log(wallet);
+    
     if (wallet.wallet_balance < service_price)
       throw new NotFoundException('موجودی شما برای خرید تانل کافی نیست ');
-
+    console.log(serverinfo);
+    
     if (serverinfo) {
       const res = await axios.get(
         `http://${body.ip}:${serverinfo.port}/create?publicKey=${body.title + rand}`,

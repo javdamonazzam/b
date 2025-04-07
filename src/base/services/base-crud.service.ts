@@ -55,7 +55,7 @@ export abstract class BaseCrudService<T> {
       return obj;
     }
   }
-  async findAll(query: QueryParams= {}): Promise<FindAll<T>> {
+  async findAll(query: QueryParams = {}): Promise<FindAll<T>> {
     const { page, take, filter } = query;
     let pagenumber = page ? page : 0;
     const count = await this.repository.count({ where: filter });
@@ -72,15 +72,13 @@ export abstract class BaseCrudService<T> {
 
   async findOneBy(obj: Partial<T>): Promise<T> {
     const result = await this.repository.findOneBy(obj);
-    if (!result) throw new NotFoundException('');
 
     return result;
   }
   async findByUsername(username: string) {
+    console.log("find one");
 
     const result = await this.repository.findOneBy({ username: username });
-
-    if (!result) throw new NotFoundException('');
 
     return result;
   }

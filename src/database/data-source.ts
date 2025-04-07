@@ -8,7 +8,8 @@ export const dataSourceOptions: DataSourceOptions = {
   password: "1213",  // رمزعبور دیتابیس
   database: "vpn",
   // synchronize: true,
-  logging: true,
+  logging: false
+  ,
   entities: [__dirname + '/../**/*.entity.js'], 
   migrations: ["dist/src/migrations/*.js"],
   subscribers: [],

@@ -22,6 +22,8 @@ export class UserService extends BaseCrudService<User> {
     super(userRepository);
   }
   async create_user(body: CreateUserDto) {
+    console.log(body);
+    
     const user = await this.userRepository.findOneBy({
       username: body.username,
     });

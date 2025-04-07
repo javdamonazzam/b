@@ -20,4 +20,10 @@ export class TelegramController {
     
     return this.telegramService.create(body);
   }
+
+  @Public()
+  @Post('balance')
+  balance(@Body() body: any) {
+    return this.telegramService.balance(body);
+  }
 }

@@ -13,26 +13,21 @@ export class TelegramService {
     private readonly serviceService: ServiceService,
   ) { }
   async start(body: any) {
-    console.log("start");
-    
     const user = await this.userService.findByUsername(String(body.chatId))
-    console.log(user);
-    
+
     if (!user) {
-      await this.userService.create_user({ username: `${body.chatId}`, password: "lkjalkjgkjla", account_price: 45000 })
+      return await this.userService.create_user({ username: `${body.chatId}`, password: "lkjalkjgkjla", account_price: 45000 })
     }
-    const wallet = await this.walletService.findOneBy({user_id: user.id})
-    console.log(wallet.wallet_balance);
-    
-    return {
-      user_id:user.id,
-      wallet_balance: wallet.wallet_balance,
-      account_price: user.account_price,
-    };
   }
 
- async create(body:any) {
-    console.log("start",body);
-   return await this.serviceService.create_account(body) 
+  async create(body: any) {
+    return await this.serviceService.create_account(body)
+  }
+  async balance(body: any) {
+    console.log("balance");
+    
+    const user = await this.userService.findOneBy({username:body.chatId})
+   const wallet=await this.walletService.findOneBy({user_id:user.id})
+   return {wallet,user}
   }
 }
