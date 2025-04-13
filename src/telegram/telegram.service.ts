@@ -24,7 +24,6 @@ export class TelegramService {
     return await this.serviceService.create_account(body)
   }
   async balance(body: any) {
-    console.log("balance");
     
     const user = await this.userService.findOneBy({username:body.chatId})
    const wallet=await this.walletService.findOneBy({user_id:user.id})

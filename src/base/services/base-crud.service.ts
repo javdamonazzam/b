@@ -76,7 +76,6 @@ export abstract class BaseCrudService<T> {
     return result;
   }
   async findByUsername(username: string) {
-    console.log("find one");
 
     const result = await this.repository.findOneBy({ username: username });
 
