@@ -23,7 +23,6 @@ export class AuthService {
 
   async login(users: User) {
     const { username, password } = users;
-    console.log(username,password);
     
     const user = await this.usersService.findOneBy({
       username: users.username,
@@ -31,17 +30,12 @@ export class AuthService {
   
     
     const validate = await this.validateUser(username, password);
-    console.log(validate);
     
     if (validate == null) {
       throw new UnauthorizedException('Invalid username or password');
     }
     
     const payload = { username: username ,id:user.id ,role: user.role};
-    console.log(payload);
-    console.log(process.env.JWT_SECRET);
-    
-    console.log(allConfig.jwt.secret);
     
     try {
       const token = this.jwtService.sign(payload, {
