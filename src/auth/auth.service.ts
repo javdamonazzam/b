@@ -39,6 +39,8 @@ export class AuthService {
     
     const payload = { username: username ,id:user.id ,role: user.role};
     console.log(payload);
+    console.log(process.env.JWT_SECRET);
+    
     console.log(allConfig.jwt.secret);
     
     try {
