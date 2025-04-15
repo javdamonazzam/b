@@ -7,7 +7,7 @@ import helmet from 'helmet';
 import { UserService } from './user/user.service';
 import * as dotenv from 'dotenv';
 dotenv.config();
-
+console.log('CWD:', process.cwd());
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // app.useGlobalFilters(new ExceptionsFilter());
