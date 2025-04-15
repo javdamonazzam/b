@@ -2,7 +2,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 
 export const dataSourceOptions: DataSourceOptions = {
   type: "postgres",
-  host: "localhost",
+  host: "84.200.154.221",
   port: 5433,
   username: "vpn1",
   password: "1213",  // رمزعبور دیتابیس
