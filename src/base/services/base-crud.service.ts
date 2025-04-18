@@ -57,6 +57,8 @@ export abstract class BaseCrudService<T> {
   }
   async findAll(query: QueryParams = {}): Promise<FindAll<T>> {
     const { page, take, filter } = query;
+    console.log(query);
+    
     let pagenumber = page ? page : 0;
     const count = await this.repository.count({ where: filter });
     const data = await this.repository.find({

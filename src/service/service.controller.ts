@@ -15,20 +15,17 @@ import { UpdateServiceDto } from './dto/update-service.dto';
 import { QueryParams } from 'src/base';
 import { Public } from '@/auth/decorators/public.decorator';
 import { Response } from 'express';
+import axios from 'axios';
 
 @Controller('service')
 export class ServiceController {
-  constructor(private readonly serviceService: ServiceService) {}
+  constructor(private readonly serviceService: ServiceService) { }
 
   @Post('new')
   create(@Body() createServiceDto: CreateServiceDto) {
     return this.serviceService.create_account(createServiceDto);
   }
 
-  @Get('find')
-  findAll(@Query() query: QueryParams) {
-    return this.serviceService.findAll(query);
-  }
   @Public()
   @Get('public')
   async publicfind(@Query() query: QueryParams, @Res() res: Response) {
@@ -40,13 +37,45 @@ export class ServiceController {
     });
     res.send(buffer);
   }
+  @Public()
+  @Get('link')
+  // behrang
+  async linkfind(@Query() query: QueryParams, @Res() res: Response) {
+    // const results = await this.serviceService.downloadPublic(query);
+    // const buffer = results?.result[0]?.server_info;
+    // res.send(buffer);
+    if (query.title) {
+
+    }
+    await axios.get('http://79.133.46.247:3000/list')
+      .then(async response => {
+
+        const cleanedData = response.data
+          .split('\n')  // جدا کردن هر خط
+          .filter((line: string) => line.trim() !== '')  // حذف خطوط خالی
+          .map((line: string) => line.replace(/^\s*\d+\)\s*/, ''));  // حذف شماره و پرانتز
+
+        if (cleanedData.includes(query.title)) {
+
+          const create = await axios.get(`http://79.133.46.247:3000/create?publicKey=${query.title}`);
+          const buffer = create.data.replace('79.133.46.247', 'be.jettingwire.xyz');
+          res.set({
+            'Content-Disposition': `attachment; filename="${query.title}.ovpn"`,
+            'Content-Type': 'application/octet-stream',
+          });
+          res.send(buffer);
+        } else {
+
+        }
+      })
+  }
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.serviceService.findOne(+id);
   }
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
-    
+
     return this.serviceService.updateDate(+id);
   }
   @Delete('expires')
