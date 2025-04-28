@@ -25,8 +25,6 @@ export class ServiceService extends BaseCrudService<Service> {
   }
 
   async create_account(body: any) {
-
-    
     function modifyConfig(config: any) {
       // Split the config into lines
       let lines = config.split('\n');
@@ -59,27 +57,19 @@ export class ServiceService extends BaseCrudService<Service> {
     const serverinfo = await this.serverService.findOneBy({
       ip: body.ip,
     });
-    
     // Usage example
     const rand = generateRandom8DigitNumber();
-    
+
     const user = await this.userService.findOneById(body.id);
-    
     const service_price = Math.floor(user.account_price * body.month);
-    
     const wallet = await this.walletService.findOneBy({ user_id: user.id });
-    
     if (wallet.wallet_balance < service_price)
       throw new NotFoundException('موجودی شما برای خرید تانل کافی نیست ');
-    
+
     if (serverinfo) {
-      const res1 = await axios.get(
-        `http://${body.ip}:${serverinfo.port}/create?publicKey=${body.title + rand}`,
-      );
       const res = await axios.get(
         `http://${body.ip}:${serverinfo.port}/create?publicKey=${body.title + rand}`,
       );
-      
       if (serverinfo.service_type == ServiceType.WIRE) {
         const config = res.data.replace(serverinfo.ip, serverinfo.damein);
         const newConfig = modifyConfig(config);
@@ -151,6 +141,7 @@ export class ServiceService extends BaseCrudService<Service> {
     const services = await super.findAll({});
     for (let index = 0; index < services.result.length; index++) {
       const service = services.result[index];
+console.log(index);
 
       // const jalaliDate = moment(service.createdAt, 'YYYY-MM-DD').locale('fa').format('YYYY/MM/DD');
       const date = new Date(service.createdAt);
@@ -166,6 +157,7 @@ export class ServiceService extends BaseCrudService<Service> {
         const serverinfo = await this.serverService.findOneBy({
           id: service.server_id,
         });
+        console.log(service.id);
         
         try {
           const res = await axios.get(
@@ -185,6 +177,7 @@ export class ServiceService extends BaseCrudService<Service> {
   async updateDate(id) {
     const service = await super.findOne(id);
     const user = await this.userService.findOne(service.user_id);
+    console.log(user.account_price);
     await this.walletService.charge(user.id, -user.account_price);
     return await super.update(id, { month: service.month + 1 });
   }
