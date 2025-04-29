@@ -1,6 +1,6 @@
 import { BaseEntity } from 'src/base/base.entity';
 import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, OneToMany, OneToOne } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { RoleEnum } from 'src/types/enum/role.enum';
 import { Service } from '@/service/entities/service.entity';
