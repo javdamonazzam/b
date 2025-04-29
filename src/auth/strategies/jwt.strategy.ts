@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';  // اضافه کردن ConfigSe
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
   constructor(private configService: ConfigService) {
+    console.log('POSTGRES_USER:', process.env.POSTGRES_USER);
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
