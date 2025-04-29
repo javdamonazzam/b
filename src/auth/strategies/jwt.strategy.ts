@@ -1,19 +1,18 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';  // اضافه کردن ConfigService
-import { config } from 'dotenv';
+import { ConfigService } from '@nestjs/config';
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
     constructor(private configService: ConfigService) {
-        const secret = configService.get<string>('JWT_SECRET');  // استفاده از ConfigService برای خواندن متغیر
-
-        console.log('JWT_SECRET:', secret);
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: '@!!!jjjj',  // استفاده از ConfigService
+            secretOrKey: configService.get('JWT_SECRET'), // استفاده از ConfigService
         });
+        
+        console.log('JWT Secret:', this.configService.get('JWT_SECRET'));
     }
 
     async validate(payload: any) {

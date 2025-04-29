@@ -32,6 +32,7 @@ import { ConfigModule } from '@nestjs/config';
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true, // برای اینکه همه جا در دسترس باشد
+      envFilePath: '.env',
     }),
     TasksServiceModule
   ],
