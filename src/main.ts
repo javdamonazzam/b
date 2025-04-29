@@ -18,10 +18,11 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
-  // get service
-  const userService = app.get<UserService>(UserService);
   const configService = app.get(ConfigService);
   console.log('JWT_SECRET:', configService.get('JWT_SECRET')); 
+  // get service
+  const userService = app.get<UserService>(UserService);
+
   await userService.initialize();
   await app.listen(+Config.setting.port);
 }
