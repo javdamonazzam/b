@@ -5,12 +5,10 @@ import { ExceptionsFilter } from './base/middlewares/exception-handler.filter';
 import { TransformInterceptor } from './base/middlewares/transform.interceptor';
 import helmet from 'helmet';
 import { UserService } from './user/user.service';
-import * as dotenv from 'dotenv';
-import * as path from 'path';
-
-dotenv.config({
-  path: path.resolve(__dirname, '../../.env'), // از dist/src می‌ره دو پوشه بالا
-});
+import { query } from 'express';
+import { QueryParams } from './base';
+import { JwtModule } from '@nestjs/jwt';
+import { RoleEnum } from './types/enum/role.enum';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // app.useGlobalFilters(new ExceptionsFilter());
@@ -25,9 +23,7 @@ async function bootstrap() {
   // get service
   const userService = app.get<UserService>(UserService);
 
-
   await userService.initialize();
-  console.log('ENV LOADED:', process.env.JWT_SECRET);
-  await app.listen(8001);
+  await app.listen(+Config.setting.port);
 }
 bootstrap();

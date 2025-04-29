@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { DatabaseModule } from './database/database.module';
 import { ServiceModule } from './service/service.module';
+import { DiscountCodeModule } from './discount_code/discount_code.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 
@@ -11,12 +12,11 @@ import { JwtAuthGuard } from './auth/guards/jwt.guard';
 import { ScheduleModule } from '@nestjs/schedule';
 
 import { RolesGuard } from './auth/guards/role.guard';
+import { NewAccoutModule } from './new_accout/new_accout.module';
 import { ServerModule } from './server/server.module';
 import { WalletModule } from './wallet/wallet.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { TasksServiceModule } from './tasks-service/tasks-service.module';
-import { TelegramService } from './telegram/telegram.service';
-import { TelegramModule } from './telegram/telegram.module';
 
 @Module({
   imports: [
@@ -27,10 +27,10 @@ import { TelegramModule } from './telegram/telegram.module';
     InvoiceModule,
     ServiceModule,
     AuthModule,
+    // NewAccoutModule,
     ScheduleModule.forRoot(),
-    TasksServiceModule,
-    TelegramModule,
-   ],
+    TasksServiceModule
+  ],
   controllers: [AppController],
   providers: [
     AppService,
@@ -42,7 +42,6 @@ import { TelegramModule } from './telegram/telegram.module';
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
-    TelegramService,
   ],
 })
 export class AppModule {}

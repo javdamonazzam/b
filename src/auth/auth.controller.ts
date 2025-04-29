@@ -10,8 +10,7 @@ export class AuthController {
   // @(AuthGuard('local'))
   @Post('login')
   async login(@Body() Body) {
-     console.log("start");
-     console.log('CWD:', process.cwd());
+     
     return await this.authService.login(Body);
   }
 }

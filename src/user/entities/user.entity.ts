@@ -1,13 +1,7 @@
 import { BaseEntity } from 'src/base/base.entity';
-import {
-  BeforeInsert,
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-} from 'typeorm';
-import * as bcrypt from 'bcryptjs';
+import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, OneToMany, OneToOne } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { Wallet } from 'src/wallet/entities/wallet.entity';
 import { RoleEnum } from 'src/types/enum/role.enum';
 import { Service } from '@/service/entities/service.entity';
 import { Invoice } from '@/invoice/entities/invoice.entity';
@@ -21,13 +15,13 @@ export class User extends BaseEntity {
 
   @Column('int')
   account_price: number;
-
+  
   @Column('enum', { enum: RoleEnum, default: RoleEnum.USER })
   role: RoleEnum[];
 
   @BeforeInsert()
   async hashPasswordAndSetTimeStamp() {
-    if (!this.password) return;
+    if(!this.password) return
     this.password = await bcrypt.hash(this.password, 10);
   }
   // relation
@@ -37,7 +31,7 @@ export class User extends BaseEntity {
   @OneToMany('Invoice', 'user')
   invoice: Invoice[];
 
-  @ManyToMany(() => Server, (server) => server.users)
+  @ManyToMany(() => Server, server => server.users)
   @JoinTable()
   servers: Server[];
 }
@@ -67,4 +61,3 @@ export class User extends BaseEntity {
 //     return requiredRoles.some((role) => +role === user.role);
 //   }
 // }
-

@@ -1,10 +1,7 @@
-import * as path from 'path';
-import * as dotenv from 'dotenv';
+import { config } from 'dotenv';
+import { resolve } from 'path';
 
-dotenv.config({
-  path: path.resolve(__dirname, '../../.env'), // از dist/src می‌ره دو پوشه بالا
-});
-
+config();
 
 export const allConfig = {
   database: {
@@ -21,7 +18,7 @@ export const allConfig = {
     secret: process.env.JWT_SECRET,
   },
   security: {
-    name: process.env.USERNAME,
+    name: process.env.USER,
     password: process.env.PASSWORD,
   },
 };

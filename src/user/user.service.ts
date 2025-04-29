@@ -17,26 +17,20 @@ export class UserService extends BaseCrudService<User> {
   constructor(
     @InjectRepository(User)
     protected userRepository: Repository<User>,
-    private walletService: WalletService,
+    private  walletService: WalletService,
   ) {
     super(userRepository);
   }
-  async create_user(body: CreateUserDto) {
-    
-    const user = await this.userRepository.findOneBy({
-      username: body.username,
-    });
-    if (user) {
-      throw new NotFoundException('چنین کاربری وجود دارد');
-    }
-    const model_user = await this.userRepository.create(body);
-    const savedUser = await this.userRepository.save(model_user);
-    const user_wallet = await this.walletService.create({
-      wallet_balance: 0,
-      user_id: savedUser.id,
-    });
-    return user_wallet;
+async create_user(body: CreateUserDto){
+  const user = await this.userRepository.findOneBy({username: body.username})
+  if(user){ 
+    throw new NotFoundException('چنین کاربری وجود دارد')
   }
+  const model_user= await this.userRepository.create(body)
+  const savedUser = await this.userRepository.save(model_user);
+  const user_wallet = await this.walletService.create({wallet_balance:0,user_id:savedUser.id})
+return user_wallet
+}
 
   async find(body: CreateUserDto) {
     const user = await this.userRepository.findOne({
@@ -48,10 +42,10 @@ export class UserService extends BaseCrudService<User> {
   }
 
   async findOneWithPw(username: string) {
-      const user = await this.userRepository.findOne({
-        where: { username },
-        select: ['id', 'username', 'password', 'role'],
-      });
+    const user = await this.userRepository.findOne({
+      where: { username },
+      select: ['id', 'username', 'password', 'role'],
+    });
     if (!user)
       throw new UnauthorizedException('نام کاربری یا رمز عبور اشتباه است!');
     return user;
@@ -60,9 +54,9 @@ export class UserService extends BaseCrudService<User> {
     const admin = await this.userRepository.findOneBy({ role: RoleEnum.ADMIN });
     if (!admin) {
       await this.create({
-        username: "javad",
-        password: "2348",
-        account_price: 0,
+        username: Config.security.name,
+        password: Config.security.password,
+        account_price:0,
         role: [RoleEnum.ADMIN],
       });
     }

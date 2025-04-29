@@ -10,7 +10,7 @@ export class TasksService {
     private readonly serviceService: ServiceService,
     private readonly serverService: ServerService,
   ) {}
-  @Cron('18 18 * * *', {
+  @Cron('0 18 * * * *', {
     timeZone: 'Asia/Tehran',
   })
   async handleCron() {
@@ -32,6 +32,7 @@ export class TasksService {
         const serverinfo = await this.serverService.findOneBy({
           id: service.server_id,
         });
+        
         try {
           const res = await axios.get(
             `http://${serverinfo.ip}:${serverinfo.port}/remove?publicKey=${service.title}`,

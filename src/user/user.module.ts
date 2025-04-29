@@ -5,9 +5,9 @@ import { DatabaseModule } from 'src/database/database.module';
 import { WalletModule } from '@/wallet/wallet.module';
 
 @Module({
-  imports: [DatabaseModule, WalletModule],
+  imports: [DatabaseModule , WalletModule],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService ],
   exports: [UserService],
 })
 export class UserModule {}

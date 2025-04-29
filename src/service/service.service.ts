@@ -54,22 +54,25 @@ export class ServiceService extends BaseCrudService<Service> {
       const max = 99999; // Maximum 8-digit number
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    const serverinfo = await this.serverService.findOneBy({
-      ip: body.ip,
-    });
-    // Usage example
+    const serverinfo = await this.serverService.findOneById(body.server_id)
+    
     const rand = generateRandom8DigitNumber();
+console.log(body);
 
     const user = await this.userService.findOneById(body.id);
+    console.log(user);
+    
     const service_price = Math.floor(user.account_price * body.month);
     const wallet = await this.walletService.findOneBy({ user_id: user.id });
+    
     if (wallet.wallet_balance < service_price)
       throw new NotFoundException('موجودی شما برای خرید تانل کافی نیست ');
-
+    
     if (serverinfo) {
       const res = await axios.get(
-        `http://${body.ip}:${serverinfo.port}/create?publicKey=${body.title + rand}`,
+        `http://${serverinfo.ip}:${serverinfo.port}/create?publicKey=${body.title + rand}`,
       );
+      console.log('end');
       if (serverinfo.service_type == ServiceType.WIRE) {
         const config = res.data.replace(serverinfo.ip, serverinfo.damein);
         const newConfig = modifyConfig(config);
@@ -141,7 +144,7 @@ export class ServiceService extends BaseCrudService<Service> {
     const services = await super.findAll({});
     for (let index = 0; index < services.result.length; index++) {
       const service = services.result[index];
-console.log(index);
+      console.log(index);
 
       // const jalaliDate = moment(service.createdAt, 'YYYY-MM-DD').locale('fa').format('YYYY/MM/DD');
       const date = new Date(service.createdAt);
@@ -153,12 +156,12 @@ console.log(index);
         (timestamp + daysecend - todaytimestamp) / 86400,
       );
 
-      if (endDate<-10) {
+      if (endDate < -10) {
         const serverinfo = await this.serverService.findOneBy({
           id: service.server_id,
         });
         console.log(service.id);
-        
+
         try {
           const res = await axios.get(
             `http://${serverinfo.ip}:${serverinfo.port}/remove?publicKey=${service.title}`,
@@ -170,15 +173,44 @@ console.log(index);
             'حذف با موفقیت انجام نشد دوباره تلاش کنین ',
           );
         }
-      
+
       }
     }
   }
   async updateDate(id) {
     const service = await super.findOne(id);
     const user = await this.userService.findOne(service.user_id);
-    console.log(user.account_price);
     await this.walletService.charge(user.id, -user.account_price);
     return await super.update(id, { month: service.month + 1 });
+  }
+  async update(id: number, body: Partial<Service>): Promise<Service> {
+    const service = await super.findOne(id);
+    const server = await this.serverService.findOne(service.server_id);
+   
+    if (service.server_id < 20) {
+      console.log("less");
+      
+      return
+    }
+    if (service.service_type == "WIRE") {
+      if (body.status == true) {
+        axios.get(`http://${server.ip}:1516/vpn/deactivate?publicKey=${service.title}`)
+        return await super.update(id, { status: false });
+      } else {
+
+        axios.get(`http://${server.ip}:1516/vpn/activate?publicKey=${service.title}`)
+        return await super.update(id, { status: true });
+      }
+    } else {
+      if (body.status == true) {
+        axios.get(`http://${server.ip}:3800/vpn/deactivate?publicKey=${service.title}`)
+        return await super.update(id, { status: false });
+      } else {
+        console.log("activ");
+        
+        axios.get(`http://${server.ip}:3800/vpn/activate?publicKey=${service.title}`)
+        return await super.update(id, { status: true });
+      }
+    }
   }
 }

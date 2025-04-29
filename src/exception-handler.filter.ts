@@ -46,12 +46,14 @@ export class ExceptionsFilter extends BaseExceptionFilter {
         } else {
           const ArrayRes = {};
           if (Array.isArray(exception.getResponse().message)) {
+            console.log(exception.getResponse().message);
             exception.getResponse().message.forEach((item) => {
               const key = item.split(' ')[0];
               if (!ArrayRes[key]) {
                 ArrayRes[key] = [];
               }
               ArrayRes[key].push(item);
+              console.log(ArrayRes);
             });
             errorResponse.statusCode =
               exception.getResponse()?.statusCode ?? 400;
@@ -64,6 +66,7 @@ export class ExceptionsFilter extends BaseExceptionFilter {
 
       return response.send();
     } catch (e) {
+      console.log(exception);
       super.catch(exception, host);
     }
   }

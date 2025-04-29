@@ -18,7 +18,7 @@ import { Response } from 'express';
 
 @Controller('service')
 export class ServiceController {
-  constructor(private readonly serviceService: ServiceService) {}
+  constructor(private readonly serviceService: ServiceService) { }
 
   @Post('new')
   create(@Body() createServiceDto: CreateServiceDto) {
@@ -45,10 +45,16 @@ export class ServiceController {
     return this.serviceService.findOne(+id);
   }
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
-    console.log('start update');
-    
+  updateDate(@Param('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
     return this.serviceService.updateDate(+id);
+  }
+  @Patch('update/:id')
+  update(
+    @Param('id') id: string,
+    @Body() updateServiceDto: UpdateServiceDto,
+  ) {
+    console.log(id, Body);
+    return this.serviceService.update(+id, updateServiceDto);
   }
   @Delete('expires')
   remove_expire() {
