@@ -56,7 +56,7 @@ export class AuthService {
       id: user.id,
       role:user.role,
       access_token: this.jwtService.sign(payload, {
-        secret: allConfig.jwt.secret,
+        secret: "@!!!jjjj",
       }),
     };
   }
