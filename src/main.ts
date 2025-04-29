@@ -5,10 +5,8 @@ import { ExceptionsFilter } from './base/middlewares/exception-handler.filter';
 import { TransformInterceptor } from './base/middlewares/transform.interceptor';
 import helmet from 'helmet';
 import { UserService } from './user/user.service';
-import { query } from 'express';
-import { QueryParams } from './base';
-import { JwtModule } from '@nestjs/jwt';
-import { RoleEnum } from './types/enum/role.enum';
+import { ConfigService } from '@nestjs/config';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // app.useGlobalFilters(new ExceptionsFilter());
@@ -22,7 +20,8 @@ async function bootstrap() {
   });
   // get service
   const userService = app.get<UserService>(UserService);
-
+  const configService = app.get(ConfigService);
+  console.log('JWT_SECRET:', configService.get('JWT_SECRET')); 
   await userService.initialize();
   await app.listen(+Config.setting.port);
 }
