@@ -17,6 +17,7 @@ import { ServerModule } from './server/server.module';
 import { WalletModule } from './wallet/wallet.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { TasksServiceModule } from './tasks-service/tasks-service.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -29,6 +30,9 @@ import { TasksServiceModule } from './tasks-service/tasks-service.module';
     AuthModule,
     // NewAccoutModule,
     ScheduleModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true, // برای اینکه همه جا در دسترس باشد
+    }),
     TasksServiceModule
   ],
   controllers: [AppController],
