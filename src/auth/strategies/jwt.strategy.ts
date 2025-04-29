@@ -1,21 +1,31 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
-    constructor(private configService: ConfigService) {
-        super({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            ignoreExpiration: false,
-            secretOrKey: configService.get('JWT_SECRET'), // استفاده از ConfigService
-        });
-        
-        console.log('JWT Secret:', this.configService.get('JWT_SECRET'));
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+  private readonly logger = new Logger(JwtStrategy.name);
+
+  constructor(configService: ConfigService) {
+    const secret = configService.get('JWT_SECRET');
+    
+    // دیباگ پیشرفته
+    this.logger.debug(`JWT Secret from config: ${secret}`);
+    this.logger.debug(`All env vars: ${JSON.stringify(process.env)}`);
+
+    if (!secret) {
+      throw new Error('JWT_SECRET is not defined in configuration');
     }
 
-    async validate(payload: any) {
-        return { username: payload.username, role: payload.role };
-    }
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKey: secret,
+    });
+  }
+
+  async validate(payload: any) {
+    return { userId: payload.sub, username: payload.username };
+  }
 }

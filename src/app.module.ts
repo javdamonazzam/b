@@ -18,6 +18,7 @@ import { WalletModule } from './wallet/wallet.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { TasksServiceModule } from './tasks-service/tasks-service.module';
 import { ConfigModule } from '@nestjs/config';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { ConfigModule } from '@nestjs/config';
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true, // برای اینکه همه جا در دسترس باشد
-      envFilePath: '.env',
+      envFilePath: join(__dirname, '../.env'), // مسیر مطلق
+      ignoreEnvFile: false, // مطمئن شوید false است
     }),
     TasksServiceModule
   ],
