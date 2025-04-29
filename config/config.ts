@@ -1,5 +1,4 @@
 import { config } from 'dotenv';
-import { resolve } from 'path';
 
 config();
 

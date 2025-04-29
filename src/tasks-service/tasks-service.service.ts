@@ -9,7 +9,7 @@ export class TasksService {
   constructor(
     private readonly serviceService: ServiceService,
     private readonly serverService: ServerService,
-  ) {}
+  ) { }
   @Cron('0 18 * * * *', {
     timeZone: 'Asia/Tehran',
   })
@@ -27,18 +27,18 @@ export class TasksService {
         (timestamp + daysecend - todaytimestamp) / 86400,
       );
 
-      if (endDate<-3) {
-        
+      if (endDate < -3) {
+
         const serverinfo = await this.serverService.findOneBy({
           id: service.server_id,
         });
-        
+
         try {
           const res = await axios.get(
             `http://${serverinfo.ip}:${serverinfo.port}/remove?publicKey=${service.title}`,
           );
           Timeout(2000)
-           await this.serviceService.softDelete(service.id);
+          await this.serviceService.softDelete(service.id);
         } catch {
           throw new NotFoundException(
             'حذف با موفقیت انجام نشد دوباره تلاش کنین ',
