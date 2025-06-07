@@ -3,10 +3,10 @@ import { allConfig as Config } from '../config/config';
 
 export const dataSourceOptions: DataSourceOptions = {
   type: "postgres",
-  host: "78.39.47.173",
+  host: "78.38.53.49",
   port: 5432,
   username: "vpn1",
-  password: "mjm23489687sad",  // رمزعبور دیتابیس
+  password: "mj12345678",  // رمزعبور دیتابیس
   database: "vpn",
   // synchronize: true,
   logging: false

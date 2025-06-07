@@ -19,6 +19,7 @@ import { InvoiceModule } from './invoice/invoice.module';
 import { TasksServiceModule } from './tasks-service/tasks-service.module';
 import { ConfigModule } from '@nestjs/config';
 import { join } from 'path';
+import { ZarinpalModule } from './zarinpal/zarinpal.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { join } from 'path';
       envFilePath: join(__dirname, '../.env'), // مسیر مطلق
       ignoreEnvFile: false, // مطمئن شوید false است
     }),
-    TasksServiceModule
+    TasksServiceModule,
+    ZarinpalModule
   ],
   controllers: [AppController],
   providers: [

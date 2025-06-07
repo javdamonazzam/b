@@ -12,6 +12,9 @@ import { WalletService } from '@/wallet/wallet.service';
 import { ServiceType } from '@/types/enum/service_type';
 import { Timeout } from '@nestjs/schedule';
 
+import  ZarinPal  from 'zarinpal-node-sdk';
+
+
 @Injectable()
 export class ServiceService extends BaseCrudService<Service> {
   constructor(
@@ -25,85 +28,105 @@ export class ServiceService extends BaseCrudService<Service> {
   }
 
   async create_account(body: any) {
-    function modifyConfig(config: any) {
-      // Split the config into lines
-      let lines = config.split('\n');
-
-      // Find the index for each section
-      let interfaceIndex = lines.findIndex((line) =>
-        line.startsWith('[Interface]'),
-      );
-      let peerIndex = lines.findIndex((line) => line.startsWith('[Peer]'));
-
-      // Add MTU
-      let mtuLine = 'MTU = 1280';
-      if (!lines.includes(mtuLine)) {
-        lines.splice(interfaceIndex + 4, 0, mtuLine); // Insert after DNS line
+    console.log("start pay in back");
+    const zarinpal = new ZarinPal({
+      merchantId: '-5735-486a-b64e-3104e6bc9afe',
+      sandbox: true,
+      accessToken: 'JKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMDc3YjY0ZjIwMjY5ZTNkZTFkOWQxYmE1NzZmMDA0MmMyZWU4ZjhmM2U4NmRjOTVlMTIzOGI3MWFjMGQyYzFkMGY4ZGJlYzhiOThjNGU4M2QiLCJpYXQiOjE3NDY0NTAzODAuODg0NjQ5LCJuYmYiOjE3NDY0NTAzODAuODg0NjY3LCJleHAiOjE5MDQyMTY3ODAuODI4MDIsInN1YiI6IjE0NjgxODUiLCJzY29wZXMiOltdfQ.jZCWTnBHw0ZCgxd7JfMxwyU6lXU1mXRe8bgxOn2-LxIkdgjDcHBQHmlIHlLLwtBtksnrb5MW71HZI7GhicdfT55mqfGt_MUN3_Ui9NYzgCHLCC47OokVos7--yMz4HmOT5sViiIzXiKrKbRv1-H_SVgIVULlMzLUySg5npvDxMzsR_NxgVr06FN0wHI-UiWEgnU_WP2EN9EbqPxCDQNU0v93gc73sEokQQwtEu-rfX_dop-fm3kfKa9iUe7RJDTRy8p0yNOHznMp8YoFhncUPFjdUQjh0xT-pYlr6Fc3Q2Th_w7vUMt7VT_mSNtDTTkp8iwjQBzIOZdJPwJreXgmha4nYHJMr9JPsLbE16yzEFQnQ45PLSTKtZq2yMVS4ma7a3fu9eeFAKKOSjZOGDzY6U3GrN24XBjF1OawkPVp3h7mtqnqFv-ysgqxqFYWRCAeZrgYo5VG-Uwo4TYhV8nA_ImEap5ErUU5rl4ri1fkr3eM3KSlvBM9I0I0kCbNIZr7vd0e4PQ8orW6COVexecLYZkrFEJZPCemF_twHkqiG4gQWW2Wq6us-A5eC_DdP9vgSlfvYZp6QFCb1tyuA3kHLcOHByQZrqdi6Ahh8vx8YC2alzadUKVeq9WQ79aDCzo6-t2nrnvTLvLhgyEP3vISZd6Wjgzy9vgIHN2PdYLBbok',
+    });
+    async function initiatePayment() {
+      try {
+        const response = await zarinpal.payments.create({
+          amount: 10000,
+          callback_url: 'https://www.google.com/',
+          description: 'Payment for order #1234',
+        });
+        console.log(response);
+      } catch (error) {
+        console.error(error);
       }
-
-      let keepaliveLine = 'PersistentKeepalive = 21';
-      if (!lines.includes(keepaliveLine)) {
-        lines.splice(peerIndex + 4, 0, keepaliveLine); // Insert after Endpoint line
-      }
-
-      // Join the lines back into a single string
-      return lines.join('\n');
     }
-    function generateRandom8DigitNumber() {
-      const min = 10000; // Minimum 8-digit number
-      const max = 99999; // Maximum 8-digit number
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    const serverinfo = await this.serverService.findOneById(body.server_id)
     
-    const rand = generateRandom8DigitNumber();
-console.log(body);
+    initiatePayment();
+    // function modifyConfig(config: any) {
+    //   // Split the config into lines
+    //   let lines = config.split('\n');
 
-    const user = await this.userService.findOneById(body.id);
-    console.log(user);
-    
-    const service_price = Math.floor(user.account_price * body.month);
-    const wallet = await this.walletService.findOneBy({ user_id: user.id });
-    
-    if (wallet.wallet_balance < service_price)
-      throw new NotFoundException('موجودی شما برای خرید تانل کافی نیست ');
-    
-    if (serverinfo) {
-      const res = await axios.get(
-        `http://${serverinfo.ip}:${serverinfo.port}/create?publicKey=${body.title + rand}`,
-      );
-      console.log('end');
-      if (serverinfo.service_type == ServiceType.WIRE) {
-        const config = res.data.replace(serverinfo.ip, serverinfo.damein);
-        const newConfig = modifyConfig(config);
-        await this.walletService.charge(user.id, -service_price);
-        const service = {
-          title: body.title + rand,
-          user_id: user.id,
-          server_id: serverinfo.id,
-          service_type: serverinfo.service_type,
-          month: body.month,
-          server_info: newConfig,
-          status: true,
-        };
-        return super.create(service);
-      } else if (serverinfo.service_type == ServiceType.OPENVPN) {
-        const config = res.data.replace(serverinfo.ip, serverinfo.damein);
-        await this.walletService.charge(user.id, -service_price);
-        const service = {
-          title: body.title + rand,
-          user_id: user.id,
-          server_id: serverinfo.id,
-          service_type: serverinfo.service_type,
-          month: body.month,
-          server_info: config,
-          status: true,
-        };
-        return super.create(service);
-      }
-    } else {
-      throw new NotFoundException('اطلاعات وارد شده درست نیست');
-    }
+    //   // Find the index for each section
+    //   let interfaceIndex = lines.findIndex((line) =>
+    //     line.startsWith('[Interface]'),
+    //   );
+    //   let peerIndex = lines.findIndex((line) => line.startsWith('[Peer]'));
+
+    //   // Add MTU
+    //   let mtuLine = 'MTU = 1280';
+    //   if (!lines.includes(mtuLine)) {
+    //     lines.splice(interfaceIndex + 4, 0, mtuLine); // Insert after DNS line
+    //   }
+
+    //   let keepaliveLine = 'PersistentKeepalive = 21';
+    //   if (!lines.includes(keepaliveLine)) {
+    //     lines.splice(peerIndex + 4, 0, keepaliveLine); // Insert after Endpoint line
+    //   }
+
+    //   // Join the lines back into a single string
+    //   return lines.join('\n');
+    // }
+    // function generateRandom8DigitNumber() {
+    //   const min = 10000; // Minimum 8-digit number
+    //   const max = 99999; // Maximum 8-digit number
+    //   return Math.floor(Math.random() * (max - min + 1)) + min;
+    // }
+    // const serverinfo = await this.serverService.findOneById(body.server_id)
+
+    // const rand = generateRandom8DigitNumber();
+    // console.log(body);
+
+    // const user = await this.userService.findOneById(body.id);
+    // console.log(user);
+
+    // const service_price = Math.floor(user.account_price * body.month);
+    // const wallet = await this.walletService.findOneBy({ user_id: user.id });
+
+    // if (wallet.wallet_balance < service_price)
+    //   throw new NotFoundException('موجودی شما برای خرید تانل کافی نیست ');
+
+    // if (serverinfo) {
+    //   const res = await axios.get(
+    //     `http://${serverinfo.ip}:${serverinfo.port}/create?publicKey=${body.title + rand}`,
+    //   );
+    //   console.log('end');
+    //   if (serverinfo.service_type == ServiceType.WIRE) {
+    //     const config = res.data.replace(serverinfo.ip, serverinfo.damein);
+    //     const newConfig = modifyConfig(config);
+    //     await this.walletService.charge(user.id, -service_price);
+    //     const service = {
+    //       title: body.title + rand,
+    //       user_id: user.id,
+    //       server_id: serverinfo.id,
+    //       service_type: serverinfo.service_type,
+    //       month: body.month,
+    //       server_info: newConfig,
+    //       status: true,
+    //     };
+    //     return super.create(service);
+    //   } else if (serverinfo.service_type == ServiceType.OPENVPN) {
+    //     const config = res.data.replace(serverinfo.ip, serverinfo.damein);
+    //     await this.walletService.charge(user.id, -service_price);
+    //     const service = {
+    //       title: body.title + rand,
+    //       user_id: user.id,
+    //       server_id: serverinfo.id,
+    //       service_type: serverinfo.service_type,
+    //       month: body.month,
+    //       server_info: config,
+    //       status: true,
+    //     };
+    //     return super.create(service);
+    //   }
+    // } else {
+    //   throw new NotFoundException('اطلاعات وارد شده درست نیست');
+    // }
   }
   async downloadPublic(query: QueryParams) {
     const results = await super.findAll({ filter: { title: query.title } });
@@ -184,21 +207,34 @@ console.log(body);
     return await super.update(id, { month: service.month + 1 });
   }
   async update(id: number, body: Partial<Service>): Promise<Service> {
+    console.log("start");
+
     const service = await super.findOne(id);
+
     const server = await this.serverService.findOne(service.server_id);
-   
+    console.log(service);
+    const addressMatch = service.server_info.match(/Address\s*=\s*([\d.]+)/);
+    const ipOnly = addressMatch ? addressMatch[1] : null;
+
+    console.log(ipOnly)
+
+    console.log('Address:', ipOnly);
     if (service.server_id < 20) {
       console.log("less");
-      
+
       return
     }
+
     if (service.service_type == "WIRE") {
+      return
+      
+    
       if (body.status == true) {
-        axios.get(`http://${server.ip}:1516/vpn/deactivate?publicKey=${service.title}`)
+        axios.get(`http://${server.ip}:1516/vpn/deactivate?publicKey=${ipOnly}`)
         return await super.update(id, { status: false });
       } else {
 
-        axios.get(`http://${server.ip}:1516/vpn/activate?publicKey=${service.title}`)
+        axios.get(`http://${server.ip}:1516/vpn/activate?publicKey=${ipOnly}`)
         return await super.update(id, { status: true });
       }
     } else {
@@ -207,7 +243,7 @@ console.log(body);
         return await super.update(id, { status: false });
       } else {
         console.log("activ");
-        
+
         axios.get(`http://${server.ip}:3800/vpn/activate?publicKey=${service.title}`)
         return await super.update(id, { status: true });
       }

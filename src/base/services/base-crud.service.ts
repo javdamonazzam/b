@@ -70,7 +70,11 @@ export abstract class BaseCrudService<T> {
   }
 
   async findOneBy(obj: Partial<T>): Promise<T> {
+    console.log(obj);
+    
     const result = await this.repository.findOneBy(obj);
+    console.log(result);
+    
     if (!result) throw new NotFoundException('');
     
     return result;
@@ -103,6 +107,7 @@ export abstract class BaseCrudService<T> {
     withDeleted?: boolean,
   ): Promise<T> {
     const filter = query?.filter ?? {};
+console.log("find",id);
 
     if (query?.relation)
       query.relation = this.parseBooleanValues(query?.relation);
@@ -113,6 +118,7 @@ export abstract class BaseCrudService<T> {
       select: query?.select,
       withDeleted: withDeleted,
     });
+    
 
     if (!result) {
       throw new NotFoundException('');

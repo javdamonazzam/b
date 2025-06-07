@@ -20,7 +20,9 @@ async function bootstrap() {
   });
   const configService = app.get(ConfigService);
   console.log('JWT_SECRET:', configService.get('JWT_SECRET')); 
+  
   // get service
+
   const userService = app.get<UserService>(UserService);
 
   await userService.initialize();
