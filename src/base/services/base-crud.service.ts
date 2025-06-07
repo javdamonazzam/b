@@ -82,9 +82,6 @@ export abstract class BaseCrudService<T> {
   async findByUsername(username:string) {
     
     const result = await this.repository.findOneBy({username:username});
-    
-    if (!result) throw new NotFoundException('');
-    
     return result;
   }
 

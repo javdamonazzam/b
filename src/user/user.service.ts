@@ -22,9 +22,11 @@ export class UserService extends BaseCrudService<User> {
     super(userRepository);
   }
 async create_user(body: CreateUserDto){
+  console.log(2654654);
+  
   const user = await this.userRepository.findOneBy({username: body.username})
   if(user){ 
-    throw new NotFoundException('چنین کاربری وجود دارد')
+    return user
   }
   const model_user= await this.userRepository.create(body)
   const savedUser = await this.userRepository.save(model_user);

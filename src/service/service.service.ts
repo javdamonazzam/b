@@ -68,9 +68,12 @@ export class ServiceService extends BaseCrudService<Service> {
       throw new NotFoundException('موجودی شما برای خرید تانل کافی نیست ');
     
     if (serverinfo) {
+      console.log(serverinfo);
+      return
       const res = await axios.get(
         `http://${serverinfo.ip}:${serverinfo.port}/create?publicKey=${body.title + rand}`,
       );
+
       console.log('end');
       if (serverinfo.service_type == ServiceType.WIRE) {
         const config = res.data.replace(serverinfo.ip, serverinfo.damein);

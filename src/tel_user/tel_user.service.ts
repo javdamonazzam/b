@@ -11,13 +11,15 @@ export class TelUserService {
     private readonly serviceService: ServiceService,
   ) { }
   async start(body: any) {
+    console.log("start");
     
     const user = await this.userService.findByUsername(String(body.chatId))
+    console.log(body.chatId);
+    
     if (!user) {
-      await this.userService.create_user({ username: `${body.chatId}`, password: "lkjalkjgkjla", account_price: 45000 })
+      await this.userService.create_user({ username: `${body.chatId}`, password: "mj1213141516", account_price: 65000 })
     }
     const wallet = await this.walletService.findOneBy({user_id: user.id})
-    
     return {
       user_id:user.id,
       wallet_balance: wallet.wallet_balance,
