@@ -25,5 +25,9 @@ export class TelUserController {
     
     return this.telUserService.create(body);
   }
-
+  @Public()
+  @Post('balance')
+  balance(@Body() body: any) {
+    return this.telUserService.balance(body);
+  }
 }

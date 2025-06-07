@@ -11,7 +11,6 @@ export class TelUserService {
     private readonly serviceService: ServiceService,
   ) { }
   async start(body: any) {
-    console.log(body.chatId);
     
     const user = await this.userService.findByUsername(String(body.chatId))
     if (!user) {
@@ -28,5 +27,9 @@ export class TelUserService {
 
  async create(body:any) {
    return await this.serviceService.create_account(body) 
+  }
+
+   async balance(body:any) {
+   return await this.walletService.findByUsername(body.chatId)
   }
 }
