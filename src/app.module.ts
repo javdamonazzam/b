@@ -20,6 +20,7 @@ import { TasksServiceModule } from './tasks-service/tasks-service.module';
 import { ConfigModule } from '@nestjs/config';
 import { join } from 'path';
 import { ZarinpalModule } from './zarinpal/zarinpal.module';
+import { TelUserModule } from './tel_user/tel_user.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ZarinpalModule } from './zarinpal/zarinpal.module';
     ServiceModule,
     AuthModule,
     // NewAccoutModule,
+    TelUserModule,
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true, // برای اینکه همه جا در دسترس باشد

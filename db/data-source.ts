@@ -5,9 +5,9 @@ export const dataSourceOptions: DataSourceOptions = {
   type: "postgres",
   host: "78.38.53.49",
   port: 5432,
-  username: "vpn1",
+  username: "vpnuser",
   password: "mj12345678",  // رمزعبور دیتابیس
-  database: "vpn",
+  database: "vpn_backup",
   // synchronize: true,
   logging: false
   ,
