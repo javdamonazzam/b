@@ -10,7 +10,7 @@ export class TasksService {
     private readonly serviceService: ServiceService,
     private readonly serverService: ServerService,
   ) { }
-  @Cron('0 18 * * * *', {
+  @Cron('0 */3 * * * *', {
     timeZone: 'Asia/Tehran',
   })
   async handleCron() {
@@ -27,7 +27,33 @@ export class TasksService {
         (timestamp + daysecend - todaytimestamp) / 86400,
       );
 
-      if (endDate < -3) {
+      if (endDate < 1) {
+        console.log(service);
+
+        const serverinfo = await this.serverService.findOneBy({
+          id: service.server_id,
+        });
+        console.log(serverinfo);
+
+
+        if (service.service_type == "WIRE") {
+          console.log(`http://${serverinfo.ip}:8000/vpn/deactivate?publicKey=${service.title}`);
+
+          axios.get(`http://${serverinfo.ip}:8000/vpn/deactivate?publicKey=${service.title}`)
+          return await this.serviceService.update(serverinfo.id, { status: false });
+
+        } else {
+          console.log(`http://${serverinfo.ip}:8000/vpn/deactivate?publicKey=${service.title}`);
+
+          axios.get(`http://${serverinfo.ip}:9000/vpn/deactivate?publicKey=${service.title}`)
+          console.log("Off ", serverinfo.title);
+
+          return await this.serviceService.update(serverinfo.id, { status: false });
+
+        }
+
+      }
+      if (endDate < -10) {
 
         const serverinfo = await this.serverService.findOneBy({
           id: service.server_id,
