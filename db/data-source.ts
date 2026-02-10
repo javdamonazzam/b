@@ -7,7 +7,7 @@ export const dataSourceOptions: DataSourceOptions = {
   port: 5432,
   username: "vpnuser",
   password: "121314",  // رمزعبور دیتابیس
-  database: "vpn_backup",
+  database: "vpn",
   // synchronize: true,
   logging: false,
   entities: [__dirname + '/../**/*.entity.js'], 
