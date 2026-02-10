@@ -53,7 +53,7 @@ export class TasksService {
         }
 
       }
-      if (endDate < -10) {
+      if (endDate < -5) {
 
         const serverinfo = await this.serverService.findOneBy({
           id: service.server_id,

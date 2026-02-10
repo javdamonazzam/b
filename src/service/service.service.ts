@@ -25,8 +25,6 @@ export class ServiceService extends BaseCrudService<Service> {
   }
 
   async create_account(body: any) {
-  console.log(body);
-  
     function modifyConfig(config: any) {
       // Split the config into lines
       let lines = config.split('\n');
@@ -57,15 +55,15 @@ export class ServiceService extends BaseCrudService<Service> {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     const serverinfo = await this.serverService.findOneById(body.server_id)
-    
+
     const rand = generateRandom8DigitNumber();
 
     const user = await this.userService.findByUsername(body.chatId)
     const service_price = Math.floor(user.account_price * body.month);
-    
+
     const wallet = await this.walletService.findOneBy({ user_id: user.id });
-    console.log(wallet.wallet_balance,"___________+++++++++",service_price);
-    
+    console.log(wallet.wallet_balance, "___________+++++++++", service_price);
+
     if (wallet.wallet_balance < service_price)
       throw new NotFoundException('موجودی شما برای خرید تانل کافی نیست ');
     if (serverinfo) {
@@ -73,7 +71,6 @@ export class ServiceService extends BaseCrudService<Service> {
         `http://${serverinfo.ip}:${serverinfo.port}/create?publicKey=${body.title + rand}`,
       );
 
-      console.log('end');
       if (serverinfo.service_type == ServiceType.WIRE) {
         const config = res.data.replace(serverinfo.ip, serverinfo.damein);
         const newConfig = modifyConfig(config);
@@ -129,10 +126,10 @@ export class ServiceService extends BaseCrudService<Service> {
     }
     const serverinfo = await this.serverService.findOne(service.server_id);
     if (serverinfo) {
-      console.log(serverinfo,"<<<<<<<<<<<<<<<<<<<<<Server Infooo");
-      
+      console.log(serverinfo, "<<<<<<<<<<<<<<<<<<<<<Server Infooo");
+
       console.log(`http://${serverinfo.ip}:${serverinfo.port}/remove?publicKey=${service.title}`);
-      
+
       try {
         const res = await axios.get(
           `http://${serverinfo.ip}:${serverinfo.port}/remove?publicKey=${service.title}`,
@@ -188,10 +185,34 @@ export class ServiceService extends BaseCrudService<Service> {
     await this.walletService.charge(user.id, -user.account_price);
     return await super.update(id, { month: service.month + 1 });
   }
+  async deactive(id: number) {
+    const service = await super.findOne(id);
+    console.log("start", id, service);
+
+    const server = await this.serverService.findOne(service.server_id);
+
+    if (service.service_type == "WIRE") {
+      if (service.status == true) {
+        axios.get(`http://${server.ip}:8000/vpn/deactivate?publicKey=${service.title}`)
+        return await super.update(id, { status: false });
+      }
+    }
+  }
+  async active(id: number) {
+    const service = await super.findOne(id);
+    const server = await this.serverService.findOne(service.server_id);
+
+    if (service.service_type == "WIRE") {
+      if (service.status == false) {
+        axios.get(`http://${server.ip}:8000/vpn/activate?publicKey=${service.title}`)
+        return await super.update(id, { status: true });
+      }
+    }
+  }
   async update(id: number, body: Partial<Service>): Promise<Service> {
     const service = await super.findOne(id);
     const server = await this.serverService.findOne(service.server_id);
-   
+
     if (service.service_type == "WIRE") {
       if (body.status == true) {
         axios.get(`http://${server.ip}:8000/vpn/deactivate?publicKey=${service.title}`)
@@ -207,7 +228,7 @@ export class ServiceService extends BaseCrudService<Service> {
         return await super.update(id, { status: false });
       } else {
         console.log("activ");
-        
+
         axios.get(`http://${server.ip}:9000/vpn/activate?publicKey=${service.title}`)
         return await super.update(id, { status: true });
       }

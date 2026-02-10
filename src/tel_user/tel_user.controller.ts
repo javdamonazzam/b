@@ -26,6 +26,13 @@ export class TelUserController {
     return this.telUserService.create(body);
   }
   @Public()
+  @Get(':id')
+  getall(@Param('id') chatId: number) {
+    console.log(chatId);
+    
+    return this.telUserService.getall(chatId);
+  }
+  @Public()
   @Post('balance')
   balance(@Body() body: any) {
     return this.telUserService.balance(body);

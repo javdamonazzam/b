@@ -33,8 +33,6 @@ export class ServiceController {
   @Post('start')
   async startPayment(@Body() body: any) {
     console.log("start", body);
-
-
   }
   @Public()
   @Get('public')
@@ -48,20 +46,33 @@ export class ServiceController {
       const reskami = await axios.get(
         `http://79.133.46.247:5000/create?publicKey=${query.title}`,
       );
-      
+
       const config = reskami.data.replace('79.133.46.247', 'info.jettingwire.xyz');
-          res.set({
-      'Content-Disposition': `attachment; filename="${query.title}.ovpn"`,
-      'Content-Type': 'application/octet-stream',
-    });
-    res.send(config);
-    return
+      res.set({
+        'Content-Disposition': `attachment; filename="${query.title}.ovpn"`,
+        'Content-Type': 'application/octet-stream',
+      });
+      res.send(config);
+      return
     }
     res.set({
       'Content-Disposition': `attachment; filename="${results?.result[0].title}.ovpn"`,
       'Content-Type': 'application/octet-stream',
     });
     res.send(buffer);
+  }
+
+  // غیر فعال سازی
+  @Public()
+  @Get('deactive/:id')
+  async deactive(@Param('id') id: number){
+    return this.serviceService.deactive(id)
+  }
+// فعال سازی 
+  @Public()
+  @Get('active/:id')
+  async active(@Param('id') id: number){
+    return this.serviceService.active(id)
   }
   @Get(':id')
   findOne(@Param('id') id: string) {
